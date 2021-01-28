@@ -2,9 +2,9 @@ import fr.dgac.ivy.*;
 import java.util.Dictionary;
 import java.util.List;
 
-public class agent{
+public class Agent{
     int ID = 0;
-    private List<capteur> capteurs = new ArrayList<capteur>();
+    private List<Capteur> Capteurs = new ArrayList<Capteur>();
     private Ivy bus1;
     private Ivy bus2;
     
@@ -19,7 +19,7 @@ public class agent{
             bus2 = new Ivy("demo", "Serveur", null);
             bus2.start("localhost:2011");
         } catch(IvyException ie) {
-            println("error connecting to capteurs");
+            println("error connecting to Capteurs");
         }
         
             try{    
@@ -27,12 +27,12 @@ public class agent{
             {
                 public void receive(IvyClient client, String[] args)
                 {
-                    capteur capteurtemp = new capteur(Integer.parseInt(args[0]),Integer.parseInt(args[1]),Float.parseFloat(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
-                    agent1.add(capteurtemp);
+                    Capteur Capteurtemp = new Capteur(Integer.parseInt(args[0]),Integer.parseInt(args[1]),Float.parseFloat(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
+                    agent1.add(Capteurtemp);
                 }
         } );
         } catch(IvyException ie) {
-            println("error connecting to capteurs");
+            println("error connecting to Capteurs");
         }
         
         try{
@@ -51,23 +51,24 @@ public class agent{
     
     }
     
-    public void add(capteur c) {
+    public void add(Capteur c) {
         boolean found = false;
-        for (capteur cap : this.capteurs) {
+        for (Capteur cap : this.Capteurs) {
             if (cap.type == c.type && cap.ID == c.ID) {
                 cap.value = (cap.value + c.value) / 2;
                 found = true;
             }
       }
         if (!found) {
-            capteurs.add(c); 
+            Capteurs.add(c); 
       }
         
     }
     
     public void send() {
         String info = "Message :Agent info-" + this.ID;
-        for (capteur cap : this.capteurs)
+        for (Capteur cap : this.Capteur
+        s)
             info= info + "Type=" + cap.type + " ID=" + cap.ID + " lon=" + cap.lon + " lat=" + cap.lat + " value=" + cap.value;
         try{
             bus2.sendMsg(info);

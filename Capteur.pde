@@ -1,11 +1,11 @@
-public class capteur{
+public class Capteur{
   int ID;
   int type;
   float lon;
   float lat;
   float value;
   
-  public capteur(int ID,int type,float lon,float lat,float value){
+  public Capteur(int ID,int type,float lon,float lat,float value){
     this.ID = ID;
     this.type = type;
     this.lon = lon;
