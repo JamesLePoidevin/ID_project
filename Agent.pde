@@ -4,42 +4,43 @@ import java.util.List;
 
 public class Agent{
     int ID = 0;
-    private List<Capteur> Capteurs = new ArrayList<Capteur>();
+    private List<Sensor> Sensors = new ArrayList<Sensor>();
     private Ivy bus1;
     private Ivy bus2;
     
-    public agent(int newID) {
+    public Agent(int newID) {
         //Setting the new IDs
         this.ID = newID;
         
         try{
-            bus1 = new Ivy("demo", "Capteur", null);
-            bus1.start("localhost:2010");
+            bus1 = new Ivy("demo", "Sensor", null);
+            bus1.start("127.255.255.255:2010");
             
             bus2 = new Ivy("demo", "Serveur", null);
-            bus2.start("localhost:2011");
+            bus2.start("127.255.255.255:2011");
         } catch(IvyException ie) {
-            println("error connecting to Capteurs");
+            println("error connecting to Sensors");
         }
         
             try{    
-            bus1.bindMsg("type=(.*) ID=(.*) lon=(.*) lat=(.*) value=(.*)", new IvyMessageListener()
+            bus1.bindMsg("type=.* ID=.* lon=.* lat=.* value=.*", new IvyMessageListener()
             {
                 public void receive(IvyClient client, String[] args)
                 {
-                    Capteur Capteurtemp = new Capteur(Integer.parseInt(args[0]),Integer.parseInt(args[1]),Float.parseFloat(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
-                    agent1.add(Capteurtemp);
+                    println(args[0] +" "+ args[1]+" " + args[2]+" " + args[3]+" " + args[4]);
+                    Sensor Sensortemp = new Sensor(args[0],Integer.parseInt(args[1]),Float.parseFloat(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
+                    agent1.add(Sensortemp);
                 }
         } );
         } catch(IvyException ie) {
-            println("error connecting to Capteurs");
+            println("error connecting to Sensors");
         }
         
         try{
             bus2.bindMsg("(.*) : ID=(.*) (.*)", new IvyMessageListener() {
-                publicvoid receive(IvyClient client, String[] args)
+                public void receive(IvyClient client, String[] args)
                 {
-                  if (args[0].equals("Request") && ID == Integer.parseInt(args[1])) {
+                    if (args[0].equals("Request") && ID == Integer.parseInt(args[1])) {
                         agent1.send(); 
                 }
                 }  
@@ -51,34 +52,33 @@ public class Agent{
     
     }
     
-    public void add(Capteur c) {
+    public void add(Sensor c) {
         boolean found = false;
-        for (Capteur cap : this.Capteurs) {
-            if (cap.type == c.type && cap.ID == c.ID) {
+        for (Sensor cap : this.Sensors) {
+            if (cap.type.equals(c.type) && cap.id == c.id) {
                 cap.value = (cap.value + c.value) / 2;
                 found = true;
             }
-      }
+        }
         if (!found) {
-            Capteurs.add(c); 
-      }
+            Sensors.add(c); 
+        }
         
     }
     
     public void send() {
         String info = "Message :Agent info-" + this.ID;
-        for (Capteur cap : this.Capteur
-        s)
-            info= info + "Type=" + cap.type + " ID=" + cap.ID + " lon=" + cap.lon + " lat=" + cap.lat + " value=" + cap.value;
+        for (Sensor cap : this.Sensors)
+            info= info + "Type=" + cap.type + " ID=" + cap.id + " lon=" + cap.lon + " lat=" + cap.lat + " value=" + cap.value;
         try{
             bus2.sendMsg(info);
-     } catch(IvyException ie) {
+    } catch(IvyException ie) {
             println("error sending");
-     }
+    }
     }
     
-    public void update() {
-        
+    public void prin() {
+        println(Sensors);
     }
     
 }
