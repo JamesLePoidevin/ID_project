@@ -23,13 +23,13 @@ public class Agent{
         }
         
             try{    
-            bus1.bindMsg("type=.* ID=.* lon=.* lat=.* value=.*", new IvyMessageListener()
+            bus1.bindMsg("type=(.*) ID=(.*) lon=(.*) lat=(.*) value=(.*)", new IvyMessageListener()
             {
                 public void receive(IvyClient client, String[] args)
                 {
-                    println(args[0]);
                     Sensor Sensortemp = new Sensor(args[0],Integer.parseInt(args[1]),Float.parseFloat(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
                     agent1.addsensor(Sensortemp);
+                    println(Sensortemp.tostring());
                 }
         } );
         } catch(IvyException ie) {

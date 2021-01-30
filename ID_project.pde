@@ -29,6 +29,7 @@ void setup() {
 void draw() {
     
     s2.send_datas();
+    s3.send_datas();
     //Periodique send of the agent
     try {
         Thread.sleep(6000);

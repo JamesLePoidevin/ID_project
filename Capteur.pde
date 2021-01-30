@@ -64,6 +64,9 @@ class Sensor{
           {
             System.out.println("can't send my message !");
           }
-    
-  }
+     }
+     
+     public String tostring(){
+       return "type=" + this.type + " ID=" + this.id + " lon=" + this.lon + " lat=" + this.lat + " value=" + this.value;
+     }
 }
