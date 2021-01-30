@@ -69,7 +69,7 @@ public class Agent{
     public void send() {
         String info = "Message :Agent info-" + this.ID;
         for (Sensor cap : this.Sensors)
-            info= info + "Type=" + cap.type + " ID=" + cap.id + " lon=" + cap.lon + " lat=" + cap.lat + " value=" + cap.value;
+            info= info + " Type=" + cap.type + " ID=" + cap.id + " lon=" + cap.lon + " lat=" + cap.lat + " value=" + cap.value + " | ";
         try{
             bus2.sendMsg(info);
     } catch(IvyException ie) {
