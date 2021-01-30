@@ -49,16 +49,17 @@ class Sensor{
   }
   
     public void send_datas(){
-      Ivy bus = new Ivy("demo","Capteur",null);
+      Ivy bus = new Ivy("Capteur - Agent","Capteur",null);
       try{
-        bus.start("127.255.255.255:2010"); // lancement du bus
+        bus.start("127.255.255.255"); // lancement du bus
       }
       catch(IvyException e){
         System.out.println("Erreur "+e);
       }
       
       try{
-        bus.sendMsg("type=" + type + " ID=" + id + " lon=" + lon + " lat=" + lat + " value=" + this.generate_values()); // envoi un message
+        String s = "type=" + this.type + " ID=" + this.id + " lon=" + this.lon + " lat=" + this.lat + " value=" + this.generate_values();
+        bus.sendMsg(s); // envoi un message
         } catch (IvyException ie) // Exception levée
           {System.out.println("can't send my message !");}
     

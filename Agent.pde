@@ -13,23 +13,23 @@ public class Agent{
         this.ID = newID;
         
         try{
-            bus1 = new Ivy("demo", "Sensor", null);
-            bus1.start("127.255.255.255:2010");
+            bus1 = new Ivy("Capteur - Agent", "agent", null);
+            bus1.start("127.255.255.255");
             
-            bus2 = new Ivy("demo", "Serveur", null);
+            bus2 = new Ivy("Agent - Serveur", "agent", null);
             bus2.start("127.255.255.255:2011");
         } catch(IvyException ie) {
             println("error connecting to Sensors");
         }
-        
+        //type=.* ID=.* lon=.* lat=.* value=
             try{    
-            bus1.bindMsg("type=.* ID=.* lon=.* lat=.* value=.*", new IvyMessageListener()
+            bus1.bindMsg(".*", new IvyMessageListener()
             {
                 public void receive(IvyClient client, String[] args)
                 {
-                    println(args[0] +" "+ args[1]+" " + args[2]+" " + args[3]+" " + args[4]);
-                    Sensor Sensortemp = new Sensor(args[0],Integer.parseInt(args[1]),Float.parseFloat(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
-                    agent1.add(Sensortemp);
+                    println(args);
+                    //Sensor Sensortemp = new Sensor(args[0],Integer.parseInt(args[1]),Float.parseFloat(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
+                    //agent1.add(Sensortemp);
                 }
         } );
         } catch(IvyException ie) {
