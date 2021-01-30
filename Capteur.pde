@@ -18,13 +18,13 @@ class Sensor{
     type = type_par; 
     
     String s = "Capteur :" +this.id;
-    bus = new Ivy("Capteur - Agent",s,null);
+    bus = new Ivy("Capteur",s,null);
     try{
       bus.start("127.255.255.255");
     }catch (IvyException ie) // Exception levée
-          {
-            System.out.println("can't send my message !");
-          }
+    {
+      System.out.println("can't send my message !");
+    }
   }
   
   protected Sensor(String type_par, int id_par, float loc_parX, float loc_parY, float val){
@@ -33,6 +33,22 @@ class Sensor{
     loc_parY = lat;
     type = type_par; 
     value = val;
+  }
+  
+  public int getID() {
+    return this.id;
+  }
+  
+  public float getLongitude() {
+    return this.lon;
+  }
+  
+  public float getLatitude() {
+    return this.lat;
+  }
+  
+  public String getType() {
+    return this.type;
   }
   
   public float generate_values(){
@@ -66,7 +82,7 @@ class Sensor{
           }
      }
      
-     public String tostring(){
+     public String toString(){
        return "type=" + this.type + " ID=" + this.id + " lon=" + this.lon + " lat=" + this.lat + " value=" + this.value;
      }
 }
