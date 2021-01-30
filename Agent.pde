@@ -21,15 +21,15 @@ public class Agent{
         } catch(IvyException ie) {
             println("error connecting to Sensors");
         }
-        //type=.* ID=.* lon=.* lat=.* value=
+        
             try{    
-            bus1.bindMsg(".*", new IvyMessageListener()
+            bus1.bindMsg("type=.* ID=.* lon=.* lat=.* value=.*", new IvyMessageListener()
             {
                 public void receive(IvyClient client, String[] args)
                 {
-                    println(args);
-                    //Sensor Sensortemp = new Sensor(args[0],Integer.parseInt(args[1]),Float.parseFloat(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
-                    //agent1.add(Sensortemp);
+                    println(args[0]);
+                    Sensor Sensortemp = new Sensor(args[0],Integer.parseInt(args[1]),Float.parseFloat(args[2]),Float.parseFloat(args[3]),Float.parseFloat(args[4]));
+                    agent1.addsensor(Sensortemp);
                 }
         } );
         } catch(IvyException ie) {
@@ -52,7 +52,7 @@ public class Agent{
     
     }
     
-    public void add(Sensor c) {
+    public void addsensor(Sensor c) {
         boolean found = false;
         for (Sensor cap : this.Sensors) {
             if (cap.type.equals(c.type) && cap.id == c.id) {

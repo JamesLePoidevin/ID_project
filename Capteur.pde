@@ -12,10 +12,19 @@ class Sensor{
   
   
   protected Sensor(int id_par, float loc_parX, float loc_parY, String type_par){
-    id_par = id;
-    loc_parX = lon;
-    loc_parY = lat;
+    id = id_par;
+    lon = loc_parX;
+    lat = loc_parY;
     type = type_par; 
+    
+    String s = "Capteur :" +this.id;
+    bus = new Ivy("Capteur - Agent",s,null);
+    try{
+      bus.start("127.255.255.255");
+    }catch (IvyException ie) // Exception levée
+          {
+            System.out.println("can't send my message !");
+          }
   }
   
   protected Sensor(String type_par, int id_par, float loc_parX, float loc_parY, float val){
@@ -49,19 +58,12 @@ class Sensor{
   }
   
     public void send_datas(){
-      Ivy bus = new Ivy("Capteur - Agent","Capteur",null);
       try{
-        bus.start("127.255.255.255"); // lancement du bus
-      }
-      catch(IvyException e){
-        System.out.println("Erreur "+e);
-      }
-      
-      try{
-        String s = "type=" + this.type + " ID=" + this.id + " lon=" + this.lon + " lat=" + this.lat + " value=" + this.generate_values();
-        bus.sendMsg(s); // envoi un message
-        } catch (IvyException ie) // Exception levée
-          {System.out.println("can't send my message !");}
+        bus.sendMsg("type=" + this.type + " ID=" + this.id + " lon=" + this.lon + " lat=" + this.lat + " value=" + this.generate_values()); // envoi un message
+      } catch (IvyException ie) // Exception levée
+          {
+            System.out.println("can't send my message !");
+          }
     
   }
 }
