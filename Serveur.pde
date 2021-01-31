@@ -30,15 +30,15 @@ public class Serveur
     }
 
     // Reception des données des agents
-    //try {    
-    //  this.bus.bindMsg("TODO", new IvyMessageListener() {
-    //    public void receive(IvyClient client, String[] args) {
-    //      //TODO
-    //    }
-    //  });
-    //} catch(IvyException ie) {
-    //  println("error connecting to Sensors");
-    //}
+    try {    
+      this.bus.bindMsg("Agent=(.*) Capteur=(.*) Value=(.*)", new IvyMessageListener() {
+        public void receive(IvyClient client, String[] args) {
+          addValue(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Float.parseFloat(args[2])); 
+        }
+      });
+    } catch(IvyException ie) {
+      println("error connecting to Sensors");
+    }
   }
 
   public void addAgent(Agent agent) {
@@ -53,11 +53,30 @@ public class Serveur
     }
     return false;
   }
+  
+  public Agent getAgent(int id) {
+    for (Agent a : this.agents) {
+      if (a.getID() == id) {
+        return a;
+      }
+    }
+    return null;
+  }
 
   public void requestJson() {
     int x=5;
     try {    
       this.bus.sendMsg("Request JSON : ID=" + x);
+    } 
+    catch(IvyException ie) {
+      println("Error request json agent");
+      
+    }
+  }
+  
+  public void requestValues(Agent a) {
+    try {    
+      this.bus.sendMsg("Request values : ID=" + a.getID());
     } 
     catch(IvyException ie) {
       println("Error request json agent");
@@ -79,6 +98,16 @@ public class Serveur
         a.addsensor(sensor);
       }
       addAgent(a);
+    }
+  }
+  
+  private void addValue(int idAgent, int idSensor, float value) {
+    Agent a = getAgent(idAgent);
+    if (a != null) {
+      Sensor s = a.getSensor(idSensor);
+      if (s != null) {
+        s.setValue(value);
+      }
     }
   }
 

@@ -52,6 +52,14 @@ class Sensor {
   public String getType() {
     return this.type;
   }
+  
+  public float getValue() {
+    return this.value;
+  }
+  
+  public void setValue(float v) {
+    this.value = v;
+  }
 
   public float generate_values() {
     float borneMax, borneMin;

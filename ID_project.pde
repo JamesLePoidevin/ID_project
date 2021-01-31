@@ -50,6 +50,7 @@ void draw() {
     Thread.sleep(6000);
     println(agent1);
     agent1.send();
+    serveur.requestValues(agent1);
   } 
   catch(InterruptedException e) {
     println(e.getMessage());

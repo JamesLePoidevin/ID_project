@@ -26,7 +26,7 @@ public class Agent {
       println(ie.getMessage());
     }
 
-    // Receive 
+    // Receive sensors information
     try {    
       bus1.bindMsg("type=(.*) ID=(.*) lon=(.*) lat=(.*) value=(.*)", new IvyMessageListener()
       {
@@ -48,7 +48,7 @@ public class Agent {
         public void receive(IvyClient client, String[] args)
         {
           if (args[0].equals("values") && ID == Integer.parseInt(args[1])) {
-            send();
+            sendValues();
           } else if (args[0].equals("JSON")) {
             sendJSON();
           }
@@ -63,6 +63,15 @@ public class Agent {
 
   public int getID() {
     return this.ID;
+  }
+  
+  public Sensor getSensor(int id) {
+    for (Sensor s : this.Sensors) {
+      if (s.getID() == id) {
+        return s;
+      }
+    }
+    return null;
   }
 
   public void addsensor(Sensor c) {
@@ -119,6 +128,18 @@ public class Agent {
     catch(IvyException ie) {
       println("Error sending ");
       println(ie.getMessage());
+    }
+  }
+  
+  public void sendValues() {
+    for (Sensor cap : this.Sensors) {
+      try {
+        bus2.sendMsg("Agent=" + this.getID() + " Capteur=" + cap.getID() + " Value=" + cap.getValue());
+      } 
+      catch(IvyException ie) {
+        println("Error sending ");
+        println(ie.getMessage());
+      }
     }
   }
 
