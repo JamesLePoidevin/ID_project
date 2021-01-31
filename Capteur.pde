@@ -8,8 +8,7 @@ class Sensor {
   private float value = 0;
   private Ivy bus;
 
-  protected Sensor() {
-  };
+  protected Sensor() {};
 
 
   protected Sensor(int id_par, float loc_parX, float loc_parY, String type_par) {
@@ -36,7 +35,8 @@ class Sensor {
     type = type_par; 
     value = val;
   }
-
+  
+  //Getters and Setters
   public int getID() {
     return this.id;
   }
@@ -60,7 +60,8 @@ class Sensor {
   public void setValue(float v) {
     this.value = v;
   }
-
+  
+  //Generates new values for each type of sensor
   public float generate_values() {
     float borneMax, borneMin;
     if (type.equals("pressure")) { //en Pa
@@ -79,7 +80,8 @@ class Sensor {
     float value = borneMin + (float)Math.random() * (borneMax - borneMin);
     return value;
   }
-
+  
+  //Sends the data to the Agent
   public void send_datas() {
     try {
       bus.sendMsg("type=" + this.type + " ID=" + this.id + " lon=" + this.lon + " lat=" + this.lat + " value=" + this.generate_values()); // envoi un message

@@ -1,3 +1,4 @@
+//Copy of the file in the other folder  
 import fr.dgac.ivy.*;
 
 class Sensor{
@@ -28,9 +29,9 @@ class Sensor{
   }
   
   protected Sensor(String type_par, int id_par, float loc_parX, float loc_parY, float val){
-    id_par = id;
-    loc_parX = lon;
-    loc_parY = lat;
+    id= id_par;
+    lon = loc_parX;
+    lat = loc_parY;
     type = type_par; 
     value = val;
   }

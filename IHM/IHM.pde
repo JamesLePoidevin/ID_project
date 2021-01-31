@@ -15,48 +15,59 @@ float lat;
 String type;
 float value = 0;
 
-String sensorsattribut[];
-String sensorslist[];
-
-final String SEPARATEUR = " | ";
-final String SEPARATEURSENSOR = " ";
-
 int i = 0;
+boolean receving = false;
+
+Ivy bus;
 
 
 public void setup() {
     size(2000, 1000, P2D);
     noStroke();
     
+    //Creates a map and zooms on Guernsey
     map = new UnfoldingMap(this);
     map.zoomAndPanTo(new Location(49.465691f, - 2.585278f), 13);
     MapUtils.createDefaultEventDispatcher(this, map);
     
-    Ivy bus;
-    
+    //Receiving data for the serveur
     try{
       bus = new Ivy("Serveur - Interface Graphique", "ihm", null);
       bus.start("127.255.255.255:2012");
-      println("error connecting to Sensors");
         
       bus.bindMsg("(.*) : (.*)", new IvyMessageListener(){
         public void receive(IvyClient client, String[] args){
-        
-          sensorslist = args[1].split(SEPARATEUR);
           
-          for (i = 0;i <= Integer.parseInt(args[0]);i++) {
+          println("Value received");
+          //if the programme is receiving data then receving equals true
+          receving = true;
+          
+          //Empties the Sensors list
+          capteurs.clear();
+          
+          //Splits into multiple sensors
+          String sensorslist[] = args[1].split(" split ");
+          
+          //For each sensor
+          for (i = 0;i <= Integer.parseInt(args[0])-1;i++) {
+            //Splits each word
+            String sensorsattribut[] = sensorslist[i].split(" ");
             
-            sensorsattribut = sensorslist[i].split(SEPARATEURSENSOR);
-            
+            //Creates the variables with the data in
+            type = sensorsattribut[1];
             id = Integer.parseInt(sensorsattribut[3]);
             lon = Float.parseFloat(sensorsattribut[5]);
             lat = Float.parseFloat(sensorsattribut[7]);
-            type = sensorsattribut[1];
             value = Float.parseFloat(sensorsattribut[9]);
             
+            //Add the sensor to the list of sensors
             capteurs.add(new Sensor(type, id, lon, lat, value));
+            
           }
+          // No longer receiving a message
+          receving =false;
         }
+        
       });
     } catch(IvyException ie) {
       println("error connecting to Sensors");
@@ -64,13 +75,13 @@ public void setup() {
 }
 
 public void draw() {
-    background(0);
+    background(255);
     map.draw();
     
-    //Draws locations on screen positions according to their geo-locations.
+    //Places all the sensors on the map
     
-    //Zoom dependent marker size
-    for (Sensor s : capteurs) {
+    if(receving == false){
+      for (Sensor s : capteurs) {
         Location capteur1 = new Location(s.lon, s.lat);
         ScreenPosition poscapteur1 = map.getScreenPosition(capteur1);
         fill(200, 0, 0, 100);
@@ -78,6 +89,7 @@ public void draw() {
         
         fill(0);
         textSize(23);
-        text(s.type + " : " + s.value, poscapteur1.x + 10, poscapteur1.y);
+        text(s.type + " : " + String.format("%.3g%n", s.value), poscapteur1.x + 10, poscapteur1.y);
+      }
     }
 }

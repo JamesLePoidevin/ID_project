@@ -4,13 +4,22 @@ import java.util.List;
 public class Serveur 
 {
   private List<Agent> agents;
+  private List<Sensor> capteurs;
+  
   protected Ivy bus;
+  protected Ivy bus2;
 
   public Serveur() {
+    //inits the List of Agents and Sensors
     this.agents = new ArrayList<Agent>();
+    this.capteurs = new ArrayList<Sensor>();
+    
+    //Inits the Ivy buses
     this.bus = new Ivy("Serveur", "", null);
+    this.bus2 = new Ivy("Serveur", "", null);
     try {
       this.bus.start("127.255.255.255:2011");
+      this.bus2.start("127.255.255.255:2012");
     } 
     catch (IvyException ie) { // Exception levée 
       System.out.println("can't send my message !");
@@ -40,11 +49,13 @@ public class Serveur
       println("error connecting to Sensors");
     }
   }
-
+  
+  //adds agent the serveur
   public void addAgent(Agent agent) {
     this.agents.add(agent);
   }
-
+  
+  //Does the Serveur contain the agent
   public boolean containsAgent(int id) {
     for (Agent a : this.agents) {
       if (a.getID() == id) {
@@ -54,6 +65,7 @@ public class Serveur
     return false;
   }
   
+  //Get the agent at with a specific ID in the list
   public Agent getAgent(int id) {
     for (Agent a : this.agents) {
       if (a.getID() == id) {
@@ -62,8 +74,10 @@ public class Serveur
     }
     return null;
   }
-
+  
+  //
   public void requestJson() {
+    //The ivy reception does not work if there isn't a varible sent at the same time (We don't understand why)
     int x=5;
     try {    
       this.bus.sendMsg("Request JSON : ID=" + x);
@@ -74,6 +88,7 @@ public class Serveur
     }
   }
   
+  //Sends a request the the agent a
   public void requestValues(Agent a) {
     try {    
       this.bus.sendMsg("Request values : ID=" + a.getID());
@@ -82,7 +97,8 @@ public class Serveur
       println("Error request json agent");
     }
   }
-
+  
+  //parser JSON
   private void parsingJson(String s) {
     JSONObject json = parseJSONObject(s);              
     int IDAgent = json.getInt("ID");
@@ -101,6 +117,7 @@ public class Serveur
     }
   }
   
+  //
   private void addValue(int idAgent, int idSensor, float value) {
     Agent a = getAgent(idAgent);
     if (a != null) {
@@ -110,8 +127,36 @@ public class Serveur
       }
     }
   }
+  
+  private void listCapteur(){
+   capteurs.clear();
+   for(Agent a : agents) {
+     for(Sensor s : a.Sensors){
+       capteurs.add(s);   
+     }
+   }
+  }
+  
+  public void sendIHM(){
+    this.listCapteur();
+    String s =  capteurs.size() + " : ";
+    for (Sensor sensor : capteurs){
+      s = s + "type " + sensor.type + " ID " + sensor.id + " lon " + sensor.lon + " lat " + sensor.lat + " value " + sensor.value + " split ";
+    }
+    try{
+     this.bus2.sendMsg(s);
+    }catch(IvyException ie) {
+      println("error sending to IHM");
+    }
+  }
 
   public String toString() {
-    return "Liste agents : " + this.agents.toString();
+    this.listCapteur();
+    String s =  capteurs.size() + " : ";
+    for (Sensor sensor : capteurs){
+      s = s + "type " + sensor.type + " ID " + sensor.id + " lon " + sensor.lon + " lat " + sensor.lat + " value " + sensor.value + " $ ";
+    }
+    
+    return s;
   }
 }
