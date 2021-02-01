@@ -27,8 +27,10 @@ public class Agent {
       {
         public void receive(IvyClient client, String[] args)
         {
-          Sensor Sensortemp = new Sensor(args[0], Integer.parseInt(args[1]), Float.parseFloat(args[2]), Float.parseFloat(args[3]), Float.parseFloat(args[4]));
-          addsensor(Sensortemp);
+          Sensor s = getSensor(Integer.parseInt(args[1])); 
+          if (s != null) {
+            s.setValue(Float.parseFloat(args[4]));
+          }
         }
       } 
       );
@@ -45,7 +47,7 @@ public class Agent {
       bus2.bindMsg("Request (.*) : ID=(.*)", new IvyMessageListener() {
         public void receive(IvyClient client, String[] args)
         {
-          if (args[0].equals("values") && ID == Integer.parseInt(args[1])) {
+          if (args[0].equals("values") && getID() == Integer.parseInt(args[1])) {
             sendValues();
           } else if (args[0].equals("JSON")) {
             sendJSON();
@@ -65,9 +67,9 @@ public class Agent {
   }
   
   public Sensor getSensor(int id) {
-    for (Sensor s : this.Sensors) {
-      if (s.getID() == id) {
-        return s;
+    for (Sensor sensor : this.Sensors) {
+      if (sensor.getID() == id) {
+        return sensor;
       }
     }
     return null;
@@ -78,9 +80,9 @@ public class Agent {
     if (!Sensors.contains(c)) {
       Sensors.add(c);
     }else{
-          Sensor s = Sensors.get(Sensors.indexOf(c));
-          s.value = (s.value + s.value) / 2;
-          Sensors.add(Sensors.indexOf(c),s);
+          Sensor sensor = Sensors.get(Sensors.indexOf(c));
+          sensor.value = (sensor.value + sensor.value) / 2;
+          Sensors.add(Sensors.indexOf(c),sensor);
     }
   }
   
@@ -94,13 +96,14 @@ public class Agent {
     
     json.setInt("ID", this.ID);
     listCapteurs = new JSONArray();
-
-    for (Sensor s : this.Sensors) {
+    
+    for (Sensor sensor : this.Sensors) {
       capteur = new JSONObject();
-      capteur.setInt("ID", s.getID());
-      capteur.setString("Type", s.getType());
-      capteur.setFloat("Longitude", s.getLongitude());
-      capteur.setFloat("Latitude", s.getLatitude());
+      capteur.setInt("ID", sensor.getID());
+      capteur.setString("Type", sensor.getType());
+      capteur.setFloat("Longitude", sensor.getLongitude());
+      capteur.setFloat("Latitude", sensor.getLatitude());
+      capteur.setFloat("Value", sensor.getValue());
       listCapteurs.setJSONObject(i, capteur);
       i++;
     }

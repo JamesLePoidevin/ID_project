@@ -2,8 +2,7 @@ Agent agent1, agent2;
 Serveur serveur;
 Sensor s1,s2,s3,s4;
 
-
-int i = 0;
+int k=0;
 
 void setup() {
   //Sensor(ID,Lon,Lat,Type)
@@ -24,35 +23,30 @@ void setup() {
   serveur = new Serveur();
 }
 
-void draw() {
-  delay(1000);
-  
+void draw() {  
   //serveur requestion the config to the agents
-  if (i<1) {
+  if(k<2) {
     serveur.requestJson();
-    i++;
+    k++;
   }
+  
+  
+  //Periodique send of the agent
+  delay(6000);
   
   //Sensors sending the new data to the agents
   s1.send_datas();
   s2.send_datas();
   s3.send_datas();
   s4.send_datas();
+
+  //Agent sends message to serveur
+  //agent1.send();
   
-  //Periodique send of the agent
-  try {
-    Thread.sleep(6000);
-    
-    //Agent sends message to serveur
-    agent1.send();
-    
-    //Serveur requesting value to the agent n°1
-    serveur.requestValues(agent1);
-    
-    //Sends data to IHM
-    serveur.sendIHM();
-  } 
-  catch(InterruptedException e) {
-    println(e.getMessage());
-  }
+  //Serveur requesting value to the agents
+  serveur.requestValues(agent1);
+  serveur.requestValues(agent2);
+  
+  //Sends data to IHM
+  serveur.sendIHM();
 }

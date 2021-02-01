@@ -20,6 +20,7 @@ boolean receving = false;
 
 Ivy bus;
 
+List<Float> valuesIHM =  new ArrayList<Float>();
 
 public void setup() {
     size(2000, 1000, P2D);
@@ -44,7 +45,7 @@ public void setup() {
           
           //Empties the Sensors list
           capteurs.clear();
-          
+
           //Splits into multiple sensors
           String sensorslist[] = args[1].split(" split ");
           
@@ -63,6 +64,7 @@ public void setup() {
             //Add the sensor to the list of sensors
             capteurs.add(new Sensor(type, id, lon, lat, value));
             
+            valuesIHM.add(value);
           }
           // No longer receiving a message
           receving =false;
@@ -79,7 +81,6 @@ public void draw() {
     map.draw();
     
     //Places all the sensors on the map
-    
     if(receving == false){
       for (Sensor s : capteurs) {
         Location capteur1 = new Location(s.lon, s.lat);
@@ -89,7 +90,7 @@ public void draw() {
         
         fill(0);
         textSize(23);
-        text(s.type + " : " + String.format("%.3g%n", s.value), poscapteur1.x + 10, poscapteur1.y);
+        text(s.type + " : " + String.format("%.3g%n", s.value), poscapteur1.x + 10, poscapteur1.y);     
       }
     }
 }
