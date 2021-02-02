@@ -20,8 +20,6 @@ boolean receving = false;
 
 Ivy bus;
 
-List<Float> valuesIHM =  new ArrayList<Float>();
-
 public void setup() {
     size(2000, 1000, P2D);
     noStroke();
@@ -50,7 +48,7 @@ public void setup() {
           String sensorslist[] = args[1].split(" split ");
           
           //For each sensor
-          for (i = 0;i <= Integer.parseInt(args[0])-1;i++) {
+          for (i = 0;i < Integer.parseInt(args[0]);i++) {
             //Splits each word
             String sensorsattribut[] = sensorslist[i].split(" ");
             
@@ -63,8 +61,6 @@ public void setup() {
             
             //Add the sensor to the list of sensors
             capteurs.add(new Sensor(type, id, lon, lat, value));
-            
-            valuesIHM.add(value);
           }
           // No longer receiving a message
           receving =false;

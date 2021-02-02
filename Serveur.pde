@@ -107,7 +107,7 @@ public class Serveur
   //
   private void addValue(int idAgent, int idSensor, float value) {
     int nbAgents = this.structure.size();
-
+    
     for(int i=0 ; i < nbAgents ; i++) {
       JSONObject a = this.structure.getJSONObject(i);
       
