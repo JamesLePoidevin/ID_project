@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 UnfoldingMap map;
 
-List<Sensor> capteurs =  new ArrayList<Sensor>();
+JSONArray capteurs =  new JSONArray();
 
 int id;
 float lon;
@@ -42,7 +42,7 @@ public void setup() {
           receving = true;
           
           //Empties the Sensors list
-          capteurs.clear();
+          capteurs = new JSONArray();
 
           //Splits into multiple sensors
           String sensorslist[] = args[1].split(" split ");
@@ -53,15 +53,15 @@ public void setup() {
             String sensorsattribut[] = sensorslist[i].split(" ");
             
             //Creates the variables with the data in
-            type = sensorsattribut[1];
-            id = Integer.parseInt(sensorsattribut[3]);
-            lon = Float.parseFloat(sensorsattribut[5]);
-            lat = Float.parseFloat(sensorsattribut[7]);
-            value = Float.parseFloat(sensorsattribut[9]);
+            JSONObject s = new JSONObject();
+            s.setInt("ID",Integer.parseInt(sensorsattribut[3]));
+            s.setString("Type",sensorsattribut[1]);
+            s.setFloat("Longitude",Float.parseFloat(sensorsattribut[5]));
+            s.setFloat("Latitude",Float.parseFloat(sensorsattribut[7]));
+            s.setFloat("Value",Float.parseFloat(sensorsattribut[9]));
             
-            //Add the sensor to the list of sensors
-            capteurs.add(new Sensor(type, id, lon, lat, value));
-          }
+            capteurs.addJSONObject(capteurs.size(),s);
+            }
           // No longer receiving a message
           receving =false;
         }
@@ -76,17 +76,19 @@ public void draw() {
     background(255);
     map.draw();
     
+    
     //Places all the sensors on the map
     if(receving == false){
-      for (Sensor s : capteurs) {
-        Location capteur1 = new Location(s.lon, s.lat);
-        ScreenPosition poscapteur1 = map.getScreenPosition(capteur1);
-        fill(200, 0, 0, 100);
-        ellipse(poscapteur1.x,poscapteur1.y , 20, 20);
-        
-        fill(0);
-        textSize(23);
-        text(s.type + " : " + String.format("%.3g%n", s.value), poscapteur1.x + 10, poscapteur1.y);     
+    int nbsensor = this.capteurs.size(); 
+    for (int i = 0; i < nbsensor; i++) {
+      Location capteur1 = new Location(this.capteurs.getFloat("Longitude"), this.capteurs.getFloat("Latitude"));
+      ScreenPosition poscapteur1 = map.getScreenPosition(capteur1);
+      fill(200, 0, 0, 100);
+      ellipse(poscapteur1.x,poscapteur1.y , 20, 20);
+      
+      fill(0);
+      textSize(23);
+      text(s.type + " : " + String.format("%.3g%n", this.capteurs.getFloat("Value")), poscapteur1.x + 10, poscapteur1.y);     
       }
     }
 }

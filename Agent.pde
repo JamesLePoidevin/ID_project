@@ -41,7 +41,7 @@ public class Agent {
         }
         
         try {
-            Strings = "Agent :" + this.ID;
+            String s = "Agent :" + this.ID;
             bus2 =new Ivy("Agent", s, null);
             bus2.start("127.255.255.255:2011");
             bus2.bindMsg("Request (.*) : ID=(.*)", new IvyMessageListener() {
@@ -68,7 +68,7 @@ public class Agent {
     
     public JSONObject getSensor(int id) {
         int nbsensor = this.sensors.size(); 
-        for (int i = 0; i < nbsensor; i) {
+        for (int i = 0; i < nbsensor; i++) {
           JSONObject a = this.sensors.getJSONObject(i);
           if (a.getInt("ID") == id) {
             return a;
@@ -79,7 +79,7 @@ public class Agent {
     
     //adds sensor the the agent
     public void addsensor(Sensor c) {
-      if(!this.containsSensor(c.getID)){
+      if(!this.containsSensor(c.getID())){
         JSONObject s = new JSONObject();
         s.setInt("ID",c.getID());
         s.setString("Type",c.getType());
@@ -115,7 +115,8 @@ public class Agent {
         listCapteurs = new JSONArray();
         
         int sizesensor = sensors.size();
-        for (int i = 0; i < sizesensor; i++) {
+        for (int j = 0;  j< sizesensor; j++) {
+            JSONObject sensor = sensors.getJSONObject(j);
             capteur = new JSONObject();
             capteur.setInt("ID", sensor.getInt("ID"));
             capteur.setString("Type", sensor.getString("Type"));
@@ -138,11 +139,11 @@ public class Agent {
     
     //if there is a request from the Serveur for the values then it is sent
     public void sendValues() {
-      int nbsensor = this.sensors.size()
+      int nbsensor = this.sensors.size();
       for (int i = 0; i < nbsensor; i++) {
         JSONObject cap = this.sensors.getJSONObject(i);
         try {
-          bus2.sendMsg("Agent=" + this.getID() + " Capteur=" + cap.getInt("ID") + " Value=" + cap.getFlaot("Value"));
+          bus2.sendMsg("Agent=" + this.getID() + " Capteur=" + cap.getInt("ID") + " Value=" + cap.getFloat("Value"));
         } 
         catch(IvyException ie) {
           println("Error sending ");
@@ -154,9 +155,9 @@ public class Agent {
     //Sends all the sensors and th ID of the agent to the serveur
     public void send() {
         String info = "Message :Agent info-" + this.ID;
-        int nbsensor = this.sensors.size()
+        int nbsensor = this.sensors.size();
         for (int i = 0; i < nbsensor; i++) {
-          info = info + this.structure.getJSONObject(i) + " | ";
+          info = info + this.sensors.getJSONObject(i) + " | ";
           try {
             bus2.sendMsg(info);
           } 
